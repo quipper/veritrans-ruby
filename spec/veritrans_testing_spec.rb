@@ -81,6 +81,20 @@ describe Veritrans::Testing, skip: true do
     end
   end
 
+  context "alfamart" do
+    it "should pay for alfamart transaction", vcr: false do
+      txn_result = Veritrans.charge('cstore',
+        cstore: {store: "Alfamart", message: "Buah Durian"},
+        transaction_details: txn_details
+      )
+
+      result = Veritrans::Testing.pay_alfamart(txn_result.payment_code)
+
+      result['status'].should == 'SUCCESS'
+      assert_txn_status(txn_result.order_id, 'settlement')
+    end
+  end
+
   context "cimb clicks" do
     it "should get cimb clicks txn info", vcr: false do
 
