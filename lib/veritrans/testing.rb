@@ -74,6 +74,14 @@ class Veritrans::TestingLib
     POST(@server_url + "/api/indomaret/#{payment_code}/pay")
   end
 
+  def get_alfamart(payment_code)
+    GET(@server_url + "/api/alfamart/#{payment_code}")
+  end
+
+  def pay_alfamart(payment_code)
+    POST(@server_url + "/api/alfamart/#{payment_code}/pay")
+  end
+
   def get_cimb_clicks(redirect_url)
     gateway_result = GET(redirect_url, return_raw: true)
 
