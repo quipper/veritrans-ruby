@@ -68,7 +68,7 @@ class Veritrans
       make_request(:post, url, params)
     end
 
-    def make_request(method, url, params, auth_header = nil)
+    def make_request(method, url, params, auth_header = nil, append_notification_url = nil, override_notification_url = nil)
       if !config.server_key || config.server_key == ''
         raise "Please add server_key to config/veritrans.yml"
       end
@@ -80,16 +80,22 @@ class Veritrans
 
       default_options = config.http_options || {}
 
+      headers = {
+        "Accept" => "application/json",
+        "Content-Type" => "application/json",
+        "User-Agent" => "Veritrans ruby gem #{Veritrans::VERSION}",
+        "Authorization" => auth_header || basic_auth_header(config.server_key)
+      }
+
+      # Docs https://api-docs.midtrans.com/#override-notification-url
+      headers.merge("X-Append-Notification" => append_notification_url) if append_notification_url.present?
+      headers.merge("X-Override-Notification" => override_notification_url) if override_notification_url.present?
+
       # Add authentication and content type
       # Docs https://api-docs.midtrans.com/#http-s-header
       request_options = {
         path: URI.parse(url).path,
-        headers: {
-          "Accept" => "application/json",
-          "Content-Type" => "application/json",
-          "User-Agent" => "Veritrans ruby gem #{Veritrans::VERSION}",
-          "Authorization" => auth_header || basic_auth_header(config.server_key)
-        }
+        headers: headers
       }
 
       if method == "GET"
