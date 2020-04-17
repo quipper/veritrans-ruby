@@ -34,11 +34,11 @@ class Veritrans
     end
 
     # This is proxy method for make_request to save request and response to logfile
-    def request_with_logging(method, url, params)
+    def request_with_logging(method, url, params, override_notification_url = nil)
       short_url = url.sub(config.api_host, '')
       file_logger.info("Perform #{short_url} \nSending: " + _json_encode(params))
 
-      result = make_request(method, url, params)
+      result = make_request(method, url, params, override_notification_url)
 
       if result.status_code < 300
         file_logger.info("Success #{short_url} \nGot: " + _json_encode(result.data) + "\n")
