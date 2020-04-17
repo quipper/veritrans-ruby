@@ -42,7 +42,9 @@ class Veritrans
       data[:item_details] = data.delete(:items) if data[:items]
       data[:customer_details] = data.delete(:customer) if data[:customer]
 
-      request_with_logging(:post, config.api_host + "/v2/charge", data)
+      @override_notification_url = data.delete(:override_notification_url) if data[:override_notification_url].present?
+
+      request_with_logging(:post, config.api_host + "/v2/charge", data, @override_notification_url)
     end
 
     def test_token(options = {})
