@@ -38,7 +38,7 @@ class Veritrans
       short_url = url.sub(config.api_host, '')
       file_logger.info("Perform #{short_url} \nSending: " + _json_encode(params))
 
-      result = make_request(method, url, params, override_notification_url)
+      result = make_request(method, url, params, nil, override_notification_url)
 
       if result.status_code < 300
         file_logger.info("Success #{short_url} \nGot: " + _json_encode(result.data) + "\n")
@@ -88,7 +88,7 @@ class Veritrans
       }
 
       # Docs https://api-docs.midtrans.com/#override-notification-url
-      headers.merge("X-Override-Notification" => override_notification_url) if override_notification_url.present?
+      headers.merge!("X-Override-Notification" => override_notification_url) if override_notification_url.present?
 
       # Add authentication and content type
       # Docs https://api-docs.midtrans.com/#http-s-header
